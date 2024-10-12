@@ -72,7 +72,7 @@ export async function POST(req: Request) {
     Remember to provide your analysis in a clear, concise manner, focusing on the most relevant information for the given Indian legal context. Your goal is to provide high-quality, actionable insights that can assist legal professionals working within the Indian legal system.
     `;
 
-    const stream = anthropic.messages.stream({
+    const stream = await anthropic.messages.stream({
       model: "claude-3-5-sonnet-20240620",
       max_tokens: 1024,
       system: systemPrompt,
@@ -84,6 +84,7 @@ export async function POST(req: Request) {
 
     let responseText = "";
 
+    const encoder = new TextEncoder();
     const readableStream = new ReadableStream({
       async start(controller) {
         for await (const chunk of stream) {
@@ -93,7 +94,7 @@ export async function POST(req: Request) {
           ) {
             const text = chunk.delta.text;
             responseText += text;
-            controller.enqueue(text);
+            controller.enqueue(encoder.encode(text));
           }
         }
         controller.close();
@@ -115,10 +116,10 @@ export async function POST(req: Request) {
     });
 
     return new Response(readableStream, {
-      headers: { "Content-Type": "text/plain; charset=utf-8" },
+      headers: { 'Content-Type': 'text/plain; charset=utf-8' },
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error:", error);
-    return NextResponse.json({ error: "An error occurred" }, { status: 500 });
+    return NextResponse.json({ error: "An error occurred", details: error.message }, { status: 500 });
   }
 }
