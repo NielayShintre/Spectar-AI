@@ -114,16 +114,16 @@ export default function HomeClient({
   );
 
   return (
-    <div className="relative w-screen min-h-screen overflow-hidden bg-gradient-to-r from-amber-200 to-zinc-600">
+    <div className="relative w-screen min-h-screen overflow-hidden bg-gradient-to-r from-blue-500 to-slate-300">
       <div className="relative z-10 flex items-center justify-center min-h-screen">
       <div className="absolute top-4 left-1/2 transform -translate-x-1/2">
-        <h1 className="text-4xl font-bold text-transparent bg-gradient-to-r from-purple-950 to-purple-800 bg-clip-text">⚖ Spectar AI</h1>
+        <h1 className="text-4xl font-bold text-blue-900">⚖ Spectar AI</h1>
       </div>
         <div className="max-w-4xl p-8 bg-white bg-opacity-90 rounded-lg shadow-xl">
           <div className="flex flex-col items-center text-center">
             <div className="flex items-center">
               <h1 className="mr-3 text-3xl font-bold text-gray-800">
-                Chat with any Legal Document
+                <span className="text-blue-600">Chat with</span> with any Legal Document
               </h1>
               <UserButton afterSwitchSessionUrl="/" />
             </div>
