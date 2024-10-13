@@ -1,9 +1,9 @@
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server';
 import { razorpay } from "@/lib/razorpay";
 import fs from "fs";
 import path from "path";
 
-const ordersFilePath = path.resolve(process.cwd(), "orders.json");
+const ordersFilePath = path.join('/tmp', 'orders.json');
 
 const readData = (): any[] => {
   if (fs.existsSync(ordersFilePath)) {

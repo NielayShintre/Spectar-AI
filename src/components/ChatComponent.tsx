@@ -8,6 +8,7 @@ import MessageList from "./MessageList";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Message } from "ai";
+import { Loader2 } from "lucide-react";
 import { v4 as uuidv4 } from "uuid"; // Import uuid for generating unique IDs
 
 type Props = { chatId: number };
@@ -25,6 +26,7 @@ const ChatComponent = ({ chatId }: Props) => {
 
   const [messages, setMessages] = useState<Message[]>(data || []);
   const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const messageContainer = document.getElementById("message-container");
@@ -47,6 +49,7 @@ const ChatComponent = ({ chatId }: Props) => {
     const newMessage: Message = { id: uuidv4(), role: "user", content: input };
     setMessages((prevMessages) => [...prevMessages, newMessage]);
     setInput("");
+    setLoading(true);
 
     const response = await fetch("/api/chat", {
       method: "POST",
@@ -58,24 +61,32 @@ const ChatComponent = ({ chatId }: Props) => {
 
     const reader = response.body?.getReader();
     const decoder = new TextDecoder("utf-8");
-    let accumulatedResponse = ""; // Initialize a variable to accumulate chunks
+    let accumulatedResponse = "";
 
     if (reader) {
+      const assistantMessageId = uuidv4();
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { id: assistantMessageId, role: "assistant", content: "" },
+      ]);
+
       let done = false;
       while (!done) {
         const { value, done: readerDone } = await reader.read();
         done = readerDone;
         const chunk = decoder.decode(value, { stream: true });
-        accumulatedResponse += chunk; // Accumulate chunks
+        accumulatedResponse += chunk;
+
+        setMessages((prevMessages) =>
+          prevMessages.map((msg) =>
+            msg.id === assistantMessageId
+              ? { ...msg, content: accumulatedResponse }
+              : msg
+          )
+        );
       }
 
-      // Update the state once with the complete response
-      const assistantMessage: Message = {
-        id: uuidv4(),
-        role: "assistant",
-        content: accumulatedResponse,
-      };
-      setMessages((prevMessages) => [...prevMessages, assistantMessage]);
+      setLoading(false);
     }
   };
 

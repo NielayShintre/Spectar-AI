@@ -24,7 +24,7 @@ export async function GET() {
     if (_userSubscriptions[0] && _userSubscriptions[0].razorpayCustomerId) {
       // User has a subscription, create a payment link for management
       const paymentLink = await razorpay.paymentLink.create({
-        amount: 0,
+        amount: 2000,
         currency: "INR",
         accept_partial: false,
         description: "Subscription Management",

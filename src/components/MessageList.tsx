@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Message } from "ai/react";
 import { Loader2 } from "lucide-react";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 
 type Props = {
   isLoading: boolean;
@@ -9,6 +9,12 @@ type Props = {
 };
 
 const MessageList = ({ messages, isLoading }: Props) => {
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
   if (isLoading) {
     return (
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
@@ -16,7 +22,9 @@ const MessageList = ({ messages, isLoading }: Props) => {
       </div>
     );
   }
+
   if (!messages) return <></>;
+
   return (
     <div className="flex flex-col gap-2 px-4">
       {messages.map((message) => {
@@ -41,6 +49,15 @@ const MessageList = ({ messages, isLoading }: Props) => {
           </div>
         );
       })}
+      {isLoading && (
+        <div className="flex justify-start pr-10">
+          <div className="rounded-lg px-3 text-sm py-1 shadow-md ring-1 ring-gray-900/10">
+            <Loader2 className="h-4 w-4 animate-spin inline-block mr-2" />
+            Generating response...
+          </div>
+        </div>
+      )}
+      <div ref={messagesEndRef} />
     </div>
   );
 };

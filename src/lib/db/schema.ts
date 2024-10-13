@@ -49,17 +49,18 @@ export const messages = pgTable("messages", {
 export const userSubscriptions = pgTable("user_subscriptions", {
   id: serial("id").primaryKey(),
   userId: varchar("user_id", { length: 256 }).notNull().unique(),
-  razorpayCustomerId: varchar("razorpay_customer_id", { length: 256 })
-    .notNull()
-    .unique(),
-  razorpaySubscriptionId: varchar("razorpay_subscription_id", {
-    length: 256,
-  }).unique(),
+  razorpayCustomerId: varchar("razorpay_customer_id", { length: 256 }).notNull().unique(),
+  razorpaySubscriptionId: varchar("razorpay_subscription_id", { length: 256 }).unique(),
+  razorpayOrderId: varchar("razorpay_order_id", { length: 256 }).unique(),
   razorpayPriceId: varchar("razorpay_price_id", { length: 256 }),
   razorpayCurrentPeriodEnd: timestamp("razorpay_current_period_ended_at"),
-  status: varchar("status", { length: 20 }).notNull().default('active'),
+  status: varchar("status", { length: 20 }).notNull().default("active"),
+  amount: integer("amount"), // Add amount column
+  currency: varchar("currency", { length: 10 }), // Add currency column  
+  receipt: varchar("receipt", { length: 256 }), // Add receipt column
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
+
 
 export type DrizzleChat = typeof chats.$inferSelect;

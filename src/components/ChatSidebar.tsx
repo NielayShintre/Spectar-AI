@@ -60,7 +60,7 @@ const ChatSidebar = ({ chats, chatId }: Props) => {
               if (res.data.status === "ok") {
                 window.location.href = "/payment-success";
               } else {
-                alert("Payment verification failed");
+                alert("Payment verification failed"); 
               }
             })
             .catch((error) => {
