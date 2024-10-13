@@ -114,8 +114,11 @@ export default function HomeClient({
   );
 
   return (
-    <div className="relative w-screen min-h-screen overflow-hidden bg-gradient-to-r from-amber-200 to-zinc-900">
+    <div className="relative w-screen min-h-screen overflow-hidden bg-gradient-to-r from-amber-200 to-zinc-600">
       <div className="relative z-10 flex items-center justify-center min-h-screen">
+      <div className="absolute top-4 left-1/2 transform -translate-x-1/2">
+        <h1 className="text-4xl font-bold text-transparent bg-gradient-to-r from-purple-950 to-purple-800 bg-clip-text">⚖ Spectar AI</h1>
+      </div>
         <div className="max-w-4xl p-8 bg-white bg-opacity-90 rounded-lg shadow-xl">
           <div className="flex flex-col items-center text-center">
             <div className="flex items-center">
@@ -151,7 +154,7 @@ export default function HomeClient({
             </div>
 
             <p className="max-w-xl mt-3 text-lg text-gray-600">
-              Empowering lawyers with AI-driven insights ⚖
+              Empowering lawyers with AI-driven insights
             </p>
 
             <div className="w-full mt-3">
