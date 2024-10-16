@@ -1,10 +1,6 @@
 import AWS from "aws-sdk";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import {
-  S3Client,
-  PutObjectCommand,
-  GetObjectCommand,
-} from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 
 const s3 = new S3Client({
   region: process.env.NEXT_PUBLIC_S3_REGION!,
@@ -23,16 +19,6 @@ export async function getPresignedUrl(fileName: string, userId: string) {
 
   const presignedUrl = await getSignedUrl(s3, command, { expiresIn: 3600 });
   return { presignedUrl, fileKey };
-}
-
-export async function getPresignedGetUrl(fileKey: string) {
-  const command = new GetObjectCommand({
-    Bucket: process.env.NEXT_PUBLIC_S3_BUCKET_NAME!,
-    Key: fileKey,
-  });
-
-  const presignedUrl = await getSignedUrl(s3, command, { expiresIn: 3600 });
-  return presignedUrl;
 }
 
 export const uploadToS3 = async (
