@@ -8,6 +8,8 @@ import {
 import { getEmbeddings, getBatchEmbeddings } from "./embeddings";
 import md5 from "md5";
 import { convertToAscii } from "./utils";
+import { getPresignedGetUrl } from "@/lib/s3";
+import axios from "axios";
 
 let pinecone: Pinecone | null = null;
 
@@ -34,28 +36,33 @@ type DocumentMetadata = {
 };
 
 export async function loadS3IntoPinecone(fileKey: string) {
-  // 1. obtain the pdf -> download and read from pdf
-  console.log("downloading s3 into file system");
-  const file_name = await downloadFromS3(fileKey);
-  if (!file_name) {
-    throw new Error("could not download from s3");
-  }
-  console.log("loading pdf into memory" + file_name);
-  const loader = new PDFLoader(file_name);
+  // 1. obtain the pdf -> fetch using pre-signed URL
+  console.log("Fetching PDF from S3");
+  const presignedUrl = await getPresignedGetUrl(fileKey);
+  const response = await axios.get(presignedUrl, {
+    responseType: "arraybuffer",
+  });
+
+  // Convert ArrayBuffer to Blob
+  const blob = new Blob([response.data], { type: "application/pdf" });
+
+  // Parse the PDF using Blob
+  console.log("Parsing PDF");
+  const loader = new PDFLoader(blob);
   const pages = (await loader.load()) as PDFPage[];
 
-  // 2. split and segment the pdf
+  // 3. split and segment the pdf
   const documents = await Promise.all(pages.map(prepareDocument));
 
-  // 3. vectorise and embed individual documents
+  // 4. vectorise and embed individual documents
   const vectors = await Promise.all(documents.flat().map(embedDocument));
 
-  // 4. upload to pinecone
+  // 5. upload to pinecone
   const client = await getPineconeClient();
   const pineconeIndex = await client.index("legal-ai");
   const namespace = pineconeIndex.namespace(convertToAscii(fileKey));
 
-  console.log("inserting vectors into pinecone");
+  console.log("Inserting vectors into Pinecone");
   await namespace.upsert(vectors);
 
   return documents[0];
