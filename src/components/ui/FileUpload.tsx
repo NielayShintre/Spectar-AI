@@ -55,6 +55,26 @@ const FileUpload: React.FC<FileUploadProps> = ({
 
       try {
         setUploading(true);
+        
+        // Get pre-signed URL
+        const presignedUrlResponse = await axios.post("/api/get-presigned-url", {
+          fileName: file.name,
+        });
+        const { presignedUrl, fileKey } = presignedUrlResponse.data;
+
+        console.log("Pre-signed URL:", presignedUrl);
+        console.log("File Key:", fileKey);
+
+        // Upload file using pre-signed URL
+        await axios.put(presignedUrl, file, {
+          headers: {
+            "Content-Type": file.type,
+          },
+        });
+
+        console.log("File uploaded successfully");
+
+        // Use existing uploadToS3 function (you might want to refactor this later)
         const data = await uploadToS3(file, isPremium, chatCount);
         if (!data?.file_key || !data.file_name) {
           toast.error("Something went wrong");
