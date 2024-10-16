@@ -11,7 +11,9 @@ const PDFViewer = ({ fileKey }: Props) => {
   useEffect(() => {
     const fetchPresignedUrl = async () => {
       try {
+        console.log("Fetching presigned URL for fileKey:", fileKey);
         const url = await getPresignedGetUrl(fileKey);
+        console.log("Received presigned URL:", url);
         setPdfUrl(url);
       } catch (error) {
         console.error("Error fetching pre-signed URL:", error);
@@ -25,6 +27,7 @@ const PDFViewer = ({ fileKey }: Props) => {
     return <div>Loading PDF...</div>;
   }
 
+  console.log("Rendering PDF with URL:", pdfUrl);
   return (
     <iframe
       src={`https://docs.google.com/gview?url=${encodeURIComponent(
