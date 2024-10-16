@@ -1,4 +1,5 @@
 // PDFViewer.tsx
+"use client";
 import React, { useEffect, useState } from "react";
 import { getPresignedGetUrl } from "@/lib/s3";
 
@@ -26,7 +27,9 @@ const PDFViewer = ({ fileKey }: Props) => {
 
   return (
     <iframe
-      src={`https://docs.google.com/gview?url=${encodeURIComponent(pdfUrl)}&embedded=true`}
+      src={`https://docs.google.com/gview?url=${encodeURIComponent(
+        pdfUrl
+      )}&embedded=true`}
       className="w-full h-full border-2 border-[#000000] border-dashed"
     ></iframe>
   );
