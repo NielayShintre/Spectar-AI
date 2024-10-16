@@ -35,10 +35,10 @@ const ChatSidebar = ({ chats, chatId }: Props) => {
 
       // Open Razorpay Checkout
       const options = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID!, // Use public key
+        key: process.env.RAZORPAY_KEY_ID!, 
         amount: order.amount,
         currency: order.currency,
-        name: "LegalDoc AI",
+        name: "Spectar AI",
         description: "Upgrade to Premium",
         order_id: order.id, // This is the order_id created in the backend
         callback_url: "/api/verify-payment", // Your success URL

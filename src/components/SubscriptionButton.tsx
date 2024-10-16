@@ -15,9 +15,9 @@ const SubscriptionButton = ({ isPremium }: Props) => {
       const response = await axios.get("/api/razorpay");
       const subscriptionId = response.data.subscriptionId;
       const options = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID!,
+        key: process.env.RAZORPAY_KEY_ID!,
         subscription_id: subscriptionId,
-        name: "LegalDoc AI",
+        name: "Spectar AI",
         description: "Premium Plan Subscription",
         handler: function (response: any) {
           router.refresh();
