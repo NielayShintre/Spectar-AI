@@ -125,7 +125,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
             <>
               <Inbox className="mx-auto h-12 w-12 text-gray-400" />
               <p className="mt-2 text-sm text-gray-500">
-                Drag and drop your file here, or click to select a file
+                Drag and drop your PDF file here, or click to select a file
               </p>
               <p className="mt-1 text-xs text-gray-500">(PDF up to 10MB)</p>
             </>
