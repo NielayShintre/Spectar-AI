@@ -1,15 +1,13 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { Input } from "./ui/input";
-import { useChat } from "ai/react";
 import { Button } from "./ui/button";
-import { Send } from "lucide-react";
+import { Send, History } from "lucide-react";
 import MessageList from "./MessageList";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Message } from "ai";
-import { Loader2 } from "lucide-react";
-import { v4 as uuidv4 } from "uuid"; // Import uuid for generating unique IDs
+import { v4 as uuidv4 } from "uuid";
 
 type Props = { chatId: number };
 
@@ -91,17 +89,24 @@ const ChatComponent = ({ chatId }: Props) => {
   };
 
   return (
-    <div
-      className="relative max-h-screen overflow-scroll"
-      id="message-container"
-    >
+    <div className="flex flex-col h-screen">
       {/* header */}
       <div className="sticky top-0 inset-x-0 p-2 bg-white h-fit">
         <h3 className="text-xl font-bold">Chat</h3>
       </div>
 
-      {/* message list */}
-      <MessageList messages={messages} isLoading={isLoading} />
+      <div className="flex-grow overflow-y-auto">
+        {messages.length === 0 ? (
+          <div className="flex flex-col items-center justify-center h-full text-gray-500">
+            <div className="flex justify-center items-center space-x-1">
+              <History />
+              <p>No message history yet</p>
+            </div>
+          </div>
+        ) : (
+          <MessageList messages={messages} isLoading={isLoading} />
+        )}
+      </div>
 
       <form
         onSubmit={handleSubmit}
