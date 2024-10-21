@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Send, History } from "lucide-react";
@@ -25,15 +25,14 @@ const ChatComponent = ({ chatId }: Props) => {
   const [messages, setMessages] = useState<Message[]>(data || []);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   useEffect(() => {
-    const messageContainer = document.getElementById("message-container");
-    if (messageContainer) {
-      messageContainer.scrollTo({
-        top: messageContainer.scrollHeight,
-        behavior: "smooth",
-      });
-    }
+    scrollToBottom();
   }, [messages]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,11 +90,12 @@ const ChatComponent = ({ chatId }: Props) => {
   return (
     <div className="flex flex-col h-screen">
       {/* header */}
-      <div className="sticky top-0 inset-x-0 p-2 bg-white h-fit">
+      <div className="sticky top-0 inset-x-0 p-2 bg-white h-fit z-10">
         <h3 className="text-xl font-bold">Chat</h3>
       </div>
 
-      <div className="flex-grow overflow-y-auto">
+      {/* message container with natural scroll */}
+      <div className="flex-grow overflow-y-auto" id="message-container">
         {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-gray-500">
             <div className="flex justify-center items-center space-x-1">
@@ -104,13 +104,17 @@ const ChatComponent = ({ chatId }: Props) => {
             </div>
           </div>
         ) : (
-          <MessageList messages={messages} isLoading={isLoading} />
+          <>
+            <MessageList messages={messages} isLoading={isLoading} />
+            <div ref={messagesEndRef} /> {/* Scroll anchor */}
+          </>
         )}
       </div>
 
+      {/* input form */}
       <form
         onSubmit={handleSubmit}
-        className="sticky bottom-0 inset-x-0 px-2 py-4 bg-white"
+        className="sticky bottom-0 inset-x-0 px-2 py-4 bg-white border-t"
       >
         <div className="flex">
           <Input
